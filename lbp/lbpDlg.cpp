@@ -1,5 +1,5 @@
 
-// lbpDlg.cpp : ÊµÏÖÎÄ¼ş
+// lbpDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -22,14 +22,14 @@ using namespace cv;
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-//Ã¿¸öÈËµÄÑù±¾Í¼Æ¬ÊıÁ¿
+//æ¯ä¸ªäººçš„æ ·æœ¬å›¾ç‰‡æ•°é‡
 const int SAMPLE_NUM = 3;
 
-//ÊÇ·ñĞèÒª¼ì²âÍ¼ÏñÖĞµÄÈËÁ³ÇøÓò
+//æ˜¯å¦éœ€è¦æ£€æµ‹å›¾åƒä¸­çš„äººè„¸åŒºåŸŸ
 bool NEED_DETECT=true;
-//ÊÓÆµ¿ª¹Ø
+//è§†é¢‘å¼€å…³
 bool Close_Capture;
-//Ïß³Ì
+//çº¿ç¨‹
 struct ThreadInfo
 {
 	int num;
@@ -41,18 +41,18 @@ int hist[300][10][20][60];
 int file_index,pic_index,area_index;
 //int Chi[100][100];
 double avghist[300][20][60];
-//¼ÇÂ¼Â·¾¶
+//è®°å½•è·¯å¾„
 CString picpath[300];
 CString VideoPath;
 
-//Ê¶±ğ
+//è¯†åˆ«
 double hist_r[16][256];
 
 
 double weight[300][SAMPLE_NUM][20];
 double avgWeight[300][20];
 
-//·ÖÀàÆ÷
+//åˆ†ç±»å™¨
 String face_cascade_name = "haarcascade_frontalface_alt.xml";
 String eyes_cascade_name = "haarcascade_eye_tree_eyeglasses.xml";
 CascadeClassifier face_cascade;
@@ -60,8 +60,8 @@ CascadeClassifier eyes_cascade;
 
 CWnd* CWnd_pic_A;
 CWnd* CWnd_pic_B;
-// ClbpDlg ¶Ô»°¿ò
-/**************************º¯Êı*******************************/
+// ClbpDlg å¯¹è¯æ¡†
+/**************************å‡½æ•°*******************************/
 void clearHist()
 {
 	file_index=-1;
@@ -78,7 +78,7 @@ void clearHist()
 			for(int k=0;k<60;++k)
 				avghist[n][j][k]=0;
 }
-//¼ÆËãÌø±ä´ÎÊı
+//è®¡ç®—è·³å˜æ¬¡æ•°
 int getHopCount(int i)
 {
 	if(i>256 || i<0) return 0;
@@ -104,7 +104,7 @@ int getHopCount(int i)
 	}
 	return cnt;
 }
-//80*80ÇøÓò±àºÅ
+//80*80åŒºåŸŸç¼–å·
 //1  2  3  4
 //5  6  7  8
 //9  10 11 12
@@ -471,14 +471,14 @@ void clearWeight()
 		}
 	}
 }
-// ½µÎ¬Êı×é ÓÉ256->59  
+// é™ç»´æ•°ç»„ ç”±256->59  
 void lbp59table(uchar *table)
 {
 	memset(table, 0, 256);
 	uchar temp = 1;
 	for (int i = 0; i < 256; i++)
 	{
-		if (getHopCount(i) <= 2)    // Ìø±ä´ÎÊı<=2 µÄÎª·Ç0Öµ  
+		if (getHopCount(i) <= 2)    // è·³å˜æ¬¡æ•°<=2 çš„ä¸ºé0å€¼  
 		{
 			table[i] = temp;
 			temp++;
@@ -504,14 +504,14 @@ void uniformLBP(Mat &image, Mat &result, uchar *table)
 			uchar temp = 0;
 			for (int k = 0; k < 8; k++)
 			{
-				temp += (neighbor[k] >= center)* (1 << k);  // ¼ÆËãLBPµÄÖµ  
+				temp += (neighbor[k] >= center)* (1 << k);  // è®¡ç®—LBPçš„å€¼  
 			}
-			result.at<uchar>(y, x) = table[temp];   //  ½µÎª59Î¬¿Õ¼ä  
+			result.at<uchar>(y, x) = table[temp];   //  é™ä¸º59ç»´ç©ºé—´  
 			//result.at<uchar>(y, x)=temp;
 		}
 	}
 }
-//¸÷ÇøÓò¼ÆËãÖ±·½Í¼
+//å„åŒºåŸŸè®¡ç®—ç›´æ–¹å›¾
 void calcHist(Mat image)
 {
 	int x,y;
@@ -645,7 +645,7 @@ void calcHist(Mat image)
 	area_index=0;
 	++pic_index;
 }
-//¼ÆËãÊ¶±ğÖ±·½Í¼
+//è®¡ç®—è¯†åˆ«ç›´æ–¹å›¾
 void calcHist_recognition(Mat image)
 {
 	for(int i=0;i<16;++i)
@@ -765,7 +765,7 @@ void calcHist_recognition(Mat image)
 		}
 	}
 }
-//¼ÆËãÃ¿¸öÈËµÄ¾ùÖµÏòÁ¿
+//è®¡ç®—æ¯ä¸ªäººçš„å‡å€¼å‘é‡
 void calcAvg()
 {
 	double sum=0;
@@ -804,8 +804,8 @@ void calcAvg()
 	}
 	file.close();
 }
-//¸Ä±äÍ¼Æ¬¸ñÊ½£¬ÊÇ·ñĞèÒªÕë¶ÔÈËÁ³Êı¾İ¿â¼ì²âÈËÁ³ÇøÓòÔÚÕâÀï
-//ĞŞ¸ÄÊÊÓ¦Êı¾İ¿â
+//æ”¹å˜å›¾ç‰‡æ ¼å¼ï¼Œæ˜¯å¦éœ€è¦é’ˆå¯¹äººè„¸æ•°æ®åº“æ£€æµ‹äººè„¸åŒºåŸŸåœ¨è¿™é‡Œ
+//ä¿®æ”¹é€‚åº”æ•°æ®åº“
 void readfile(CString tp)
 {
 	CFileFind fileFinder;
@@ -813,10 +813,10 @@ void readfile(CString tp)
 	bool isFirstPic=true;
 	BOOL bFinished = fileFinder.FindFile(filePath);
 	//int filenum=0;
-	while(bFinished)  //Ã¿´ÎÑ­»·¶ÔÓ¦Ò»¸öÀà±ğÄ¿Â¼
+	while(bFinished)  //æ¯æ¬¡å¾ªç¯å¯¹åº”ä¸€ä¸ªç±»åˆ«ç›®å½•
 	{
 		bFinished = fileFinder.FindNextFile();
-		if(fileFinder.IsDirectory() && !fileFinder.IsDots())  //ÈôÊÇÄ¿Â¼Ôòµİ¹éµ÷ÓÃ´Ë·½·¨
+		if(fileFinder.IsDirectory() && !fileFinder.IsDots())  //è‹¥æ˜¯ç›®å½•åˆ™é€’å½’è°ƒç”¨æ­¤æ–¹æ³•
 		{
 			++file_index;	
 			pic_index=0;
@@ -827,7 +827,7 @@ void readfile(CString tp)
 		{
 			if(file_index>299)
 			{
-				//AfxMessageBox(_T("ÎÄ¼şÊıÁ¿¹ı¶à"));
+				//AfxMessageBox(_T("æ–‡ä»¶æ•°é‡è¿‡å¤š"));
 				return;
 			}
 			if(pic_index >= SAMPLE_NUM)
@@ -836,22 +836,22 @@ void readfile(CString tp)
 				return;
 			}
 				  
-			//»ñÈ¡ÎÄ¼şÀàĞÍ
+			//è·å–æ–‡ä»¶ç±»å‹
 			CString fileName = fileFinder.GetFileName();
 			int dotPos=fileName.ReverseFind('.');
 			CString fileExt=fileName.Right(fileName.GetLength()-dotPos);
 
 			CString filename = fileFinder.GetFileName();
 			//&& (filename.Find(_T("01"))!=-1 || filename.Find(_T("03"))!=-1 || filename.Find(_T("04"))!=-1 || filename.Find(_T("02"))!=-1)
-			///////Í¼Æ¬¸ñÊ½
-			///////Í¼Æ¬¸ñÊ½
-			///////Í¼Æ¬¸ñÊ½
-			///////Í¼Æ¬¸ñÊ½
-			///////Í¼Æ¬¸ñÊ½
+			///////å›¾ç‰‡æ ¼å¼
+			///////å›¾ç‰‡æ ¼å¼
+			///////å›¾ç‰‡æ ¼å¼
+			///////å›¾ç‰‡æ ¼å¼
+			///////å›¾ç‰‡æ ¼å¼
 			if(fileExt == _T(".bmp"))
 			{
 				string str=CStringA(fileFinder.GetFilePath());
-				//¼ÇÂ¼Ò»ÕÅÍ¼Æ¬Â·¾¶
+				//è®°å½•ä¸€å¼ å›¾ç‰‡è·¯å¾„
 				if(isFirstPic)
 				{
 					picpath[file_index]=fileFinder.GetFilePath();
@@ -860,7 +860,7 @@ void readfile(CString tp)
 				Mat frame=imread(str);
 				//resize(frame,frame,Size(80,80),0,0,CV_INTER_LINEAR);
 				
-/*****************¼ì²âÈËÁ³²¿·Ö***********************/
+/*****************æ£€æµ‹äººè„¸éƒ¨åˆ†***********************/
 				
 				if(NEED_DETECT)
 				{
@@ -873,7 +873,7 @@ void readfile(CString tp)
 					//Mat test(frame,faces[0]);
 					if(faces.size()==0)
 					{
-						//AfxMessageBox(_T("Ã»ÓĞ¼ì²âµ½ÈËÁ³"));
+						//AfxMessageBox(_T("æ²¡æœ‰æ£€æµ‹åˆ°äººè„¸"));
 						continue;
 						//return;
 					}
@@ -904,7 +904,7 @@ void readfile(CString tp)
 				}
 				else
 				{
-					/***********************²»ĞèÒª¼ì²âÈËÁ³²¿·Ö**********************/
+					/***********************ä¸éœ€è¦æ£€æµ‹äººè„¸éƒ¨åˆ†**********************/
 					Mat result;
 					result.create(Size(frame.cols,frame.rows),frame.type());
 					uniformLBP(frame, result, table);
@@ -918,7 +918,7 @@ void readfile(CString tp)
 	//++file_index;
 	fileFinder.Close();
 }
-//¼ÆËã¿¨·½Öµ£¬ÊÇ·ñÒÔìØÖµ×÷Îª²»Í¬ÇøÓòµÄ¼ÓÈ¨ÏµÊıÉèÖÃ
+//è®¡ç®—å¡æ–¹å€¼ï¼Œæ˜¯å¦ä»¥ç†µå€¼ä½œä¸ºä¸åŒåŒºåŸŸçš„åŠ æƒç³»æ•°è®¾ç½®
 double calcChiavg(int _index)
 {
 	double area[16];
@@ -938,15 +938,15 @@ double calcChiavg(int _index)
 			}
 		}
 	}
-	//Èç¹ûĞèÒª¼ÓÈ¨£¬ÔÚÕâÀï¸Ä
+	//å¦‚æœéœ€è¦åŠ æƒï¼Œåœ¨è¿™é‡Œæ”¹
 	for(int i=0;i<16;++i)
 	{
-		//ans+=avgWeight[_index][i] * area[i]; // ¼ÓÈ¨
-		ans+=area[i];     //²»¼ÓÈ¨
+		//ans+=avgWeight[_index][i] * area[i]; // åŠ æƒ
+		ans+=area[i];     //ä¸åŠ æƒ
 	}
 	return ans;
 }
-//¸÷ÖÖÊ¶±ğÊı¾İ´æÈëÎÄ±¾ÎÄ¼şÖĞ£¬ÎÄ¼şÔÚµ±Ç°Ä¿Â¼
+//å„ç§è¯†åˆ«æ•°æ®å­˜å…¥æ–‡æœ¬æ–‡ä»¶ä¸­ï¼Œæ–‡ä»¶åœ¨å½“å‰ç›®å½•
 void write_file()
 {
 	ofstream file;
@@ -972,7 +972,7 @@ void write_file()
 	}
 	file.close();
 }
-//ÊµÏÖ½«ÈÎÒâÍ¼Ïñ¹Ì¶¨µ½¶Ô»°¿òµÄPicture Control¿Ø¼şÉÏ
+//å®ç°å°†ä»»æ„å›¾åƒå›ºå®šåˆ°å¯¹è¯æ¡†çš„Picture Controlæ§ä»¶ä¸Š
 void ShowMatImgToWnd(CWnd* pWnd, cv::Mat img)
 {
 	if(img.empty())  
@@ -984,7 +984,7 @@ void ShowMatImgToWnd(CWnd* pWnd, cv::Mat img)
 	CClientDC dc(pWnd);
 	HDC hDC =dc.GetSafeHdc();
 
-	//ÄÚ´æÖĞµÄÍ¼ÏñÊı¾İ¿½±´µ½ÆÁÄ»ÉÏ
+	//å†…å­˜ä¸­çš„å›¾åƒæ•°æ®æ‹·è´åˆ°å±å¹•ä¸Š
 	BYTE *bitBuffer		   = NULL;
 	BITMAPINFO *bitMapinfo = NULL;
 
@@ -1010,26 +1010,26 @@ void ShowMatImgToWnd(CWnd* pWnd, cv::Mat img)
 
 
 	bitMapinfo = (BITMAPINFO *)bitBuffer;
-	bitMapinfo->bmiHeader.biSize			= sizeof(BITMAPINFOHEADER);
-	bitMapinfo->bmiHeader.biHeight		    = -img.rows;  //Èç¹û¸ß¶ÈÎªÕıµÄ£¬Î»Í¼µÄÆğÊ¼Î»ÖÃÔÚ×óÏÂ½Ç¡£Èç¹û¸ß¶ÈÎª¸º£¬ÆğÊ¼Î»ÖÃÔÚ×óÉÏ½Ç¡£
-	bitMapinfo->bmiHeader.biWidth		    = img.cols;
-	bitMapinfo->bmiHeader.biPlanes			= 1;      // Ä¿±êÉè±¸µÄ¼¶±ğ£¬±ØĞëÎª1	
-	bitMapinfo->bmiHeader.biBitCount		= ichannels *8;     // Ã¿¸öÏñËØËùĞèµÄÎ»Êı£¬±ØĞëÊÇ1(Ë«É«), 4(16É«)£¬8(256É«)»ò24(Õæ²ÊÉ«)Ö®Ò»
-	bitMapinfo->bmiHeader.biCompression	    = BI_RGB; //Î»Í¼Ñ¹ËõÀàĞÍ£¬±ØĞëÊÇ 0(²»Ñ¹Ëõ), 1(BI_RLE8Ñ¹ËõÀàĞÍ)»ò2(BI_RLE4Ñ¹ËõÀàĞÍ)Ö®Ò»
-	bitMapinfo->bmiHeader.biSizeImage		= 0;      // Î»Í¼µÄ´óĞ¡£¬ÒÔ×Ö½ÚÎªµ¥Î»
-	bitMapinfo->bmiHeader.biXPelsPerMeter	= 0;	  // Î»Í¼Ë®Æ½·Ö±æÂÊ£¬Ã¿Ã×ÏñËØÊı
-	bitMapinfo->bmiHeader.biYPelsPerMeter	= 0;	  // Î»Í¼´¹Ö±·Ö±æÂÊ£¬Ã¿Ã×ÏñËØÊı
-	bitMapinfo->bmiHeader.biClrUsed			= 0;	  // Î»Í¼Êµ¼ÊÊ¹ÓÃµÄÑÕÉ«±íÖĞµÄÑÕÉ«Êı
-	bitMapinfo->bmiHeader.biClrImportant	= 0;	  // Î»Í¼ÏÔÊ¾¹ı³ÌÖĞÖØÒªµÄÑÕÉ«Êı
+	bitMapinfo->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bitMapinfo->bmiHeader.biHeight = -img.rows;  //å¦‚æœé«˜åº¦ä¸ºæ­£çš„ï¼Œä½å›¾çš„èµ·å§‹ä½ç½®åœ¨å·¦ä¸‹è§’ã€‚å¦‚æœé«˜åº¦ä¸ºè´Ÿï¼Œèµ·å§‹ä½ç½®åœ¨å·¦ä¸Šè§’ã€‚
+	bitMapinfo->bmiHeader.biWidth = img.cols;
+	bitMapinfo->bmiHeader.biPlanes = 1;      // ç›®æ ‡è®¾å¤‡çš„çº§åˆ«ï¼Œå¿…é¡»ä¸º1	
+	bitMapinfo->bmiHeader.biBitCount = ichannels *8;     // æ¯ä¸ªåƒç´ æ‰€éœ€çš„ä½æ•°ï¼Œå¿…é¡»æ˜¯1(åŒè‰²), 4(16è‰²)ï¼Œ8(256è‰²)æˆ–24(çœŸå½©è‰²)ä¹‹ä¸€
+	bitMapinfo->bmiHeader.biCompression = BI_RGB; //ä½å›¾å‹ç¼©ç±»å‹ï¼Œå¿…é¡»æ˜¯ 0(ä¸å‹ç¼©), 1(BI_RLE8å‹ç¼©ç±»å‹)æˆ–2(BI_RLE4å‹ç¼©ç±»å‹)ä¹‹ä¸€
+	bitMapinfo->bmiHeader.biSizeImage = 0;      // ä½å›¾çš„å¤§å°ï¼Œä»¥å­—èŠ‚ä¸ºå•ä½
+	bitMapinfo->bmiHeader.biXPelsPerMeter = 0;	  // ä½å›¾æ°´å¹³åˆ†è¾¨ç‡ï¼Œæ¯ç±³åƒç´ æ•°
+	bitMapinfo->bmiHeader.biYPelsPerMeter = 0;	  // ä½å›¾å‚ç›´åˆ†è¾¨ç‡ï¼Œæ¯ç±³åƒç´ æ•°
+	bitMapinfo->bmiHeader.biClrUsed	= 0;	  // ä½å›¾å®é™…ä½¿ç”¨çš„é¢œè‰²è¡¨ä¸­çš„é¢œè‰²æ•°
+	bitMapinfo->bmiHeader.biClrImportant = 0;	  // ä½å›¾æ˜¾ç¤ºè¿‡ç¨‹ä¸­é‡è¦çš„é¢œè‰²æ•°
 
 	if(ichannels == 1)
 	{
 		for(int i=0; i<256; i++)
-		{	//ÑÕÉ«µÄÈ¡Öµ·¶Î§ (0-255)
+		{	//é¢œè‰²çš„å–å€¼èŒƒå›´ (0-255)
 			bitMapinfo->bmiColors[i].rgbBlue  =bitMapinfo->bmiColors[i].rgbGreen =bitMapinfo->bmiColors[i].rgbRed   =(BYTE) i;
 		}
 
-		bitMapinfo->bmiHeader.biClrUsed			= 256;	  // Î»Í¼Êµ¼ÊÊ¹ÓÃµÄÑÕÉ«±íÖĞµÄÑÕÉ«Êı
+		bitMapinfo->bmiHeader.biClrUsed	= 256;	  // ä½å›¾å®é™…ä½¿ç”¨çš„é¢œè‰²è¡¨ä¸­çš„é¢œè‰²æ•°
 	}
 	SetStretchBltMode(hDC, COLORONCOLOR);
 
@@ -1037,12 +1037,12 @@ void ShowMatImgToWnd(CWnd* pWnd, cv::Mat img)
 	StretchDIBits(hDC,
 		0,
 		0,
-		drect.right,		//ÏÔÊ¾´°¿Ú¿í¶È
-		drect.bottom,		//ÏÔÊ¾´°¿Ú¸ß¶È
+		drect.right,		//æ˜¾ç¤ºçª—å£å®½åº¦
+		drect.bottom,		//æ˜¾ç¤ºçª—å£é«˜åº¦
 		0,
 		0,
-		img.cols,		   //Í¼Ïñ¿í¶È
-		img.rows,		   //Í¼Ïñ¸ß¶È
+		img.cols,		   //å›¾åƒå®½åº¦
+		img.rows,		   //å›¾åƒé«˜åº¦
 		img.data,			
 		bitMapinfo,			
 		DIB_RGB_COLORS, 
@@ -1052,7 +1052,7 @@ void ShowMatImgToWnd(CWnd* pWnd, cv::Mat img)
 	delete []bitBuffer;
 
 }
-//ÊÓÆµ¼ì²âºÍÊ¶±ğ
+//è§†é¢‘æ£€æµ‹å’Œè¯†åˆ«
 void detectAndDisplay( Mat frame )
 {
 	std::vector<Rect> faces;
@@ -1096,7 +1096,7 @@ void detectAndDisplay( Mat frame )
 		Mat res=imread(str);
 		if (!res.data)
 		{
-			AfxMessageBox(_T("Â·¾¶²»¶Ô"));
+			AfxMessageBox(_T("è·¯å¾„ä¸å¯¹"));
 			return;
 		}
 		ShowMatImgToWnd(CWnd_pic_B,res);
@@ -1128,7 +1128,7 @@ void detectAndDisplay( Mat frame )
 	//imshow( window_name, frame );
 	ShowMatImgToWnd(CWnd_pic_A,frame);
 }
-//ÉãÏñÍ·¼ì²âÊ¶±ğÏß³Ì
+//æ‘„åƒå¤´æ£€æµ‹è¯†åˆ«çº¿ç¨‹
 UINT  Capture_Thread(LPVOID p)
 {
 	//int n=((ThreadInfo*)(p))->num;
@@ -1136,17 +1136,17 @@ UINT  Capture_Thread(LPVOID p)
 	if( !face_cascade.load( face_cascade_name ) ){ AfxMessageBox(_T("Error loading\n")); return 0; };
 	if( !eyes_cascade.load( eyes_cascade_name ) ){ AfxMessageBox(_T("Error loading\n")); return 0; };
 	CvCapture* capture = cvCaptureFromCAM(0);
-	if(capture)	// ÉãÏñÍ·¶ÁÈ¡ÎÄ¼ş¿ª¹Ø
+	if(capture)	// æ‘„åƒå¤´è¯»å–æ–‡ä»¶å¼€å…³
 	{
 		while( true )
 		{
-			frame = cvQueryFrame( capture );	// ÉãÏñÍ·¶ÁÈ¡ÎÄ¼ş¿ª¹Ø
+			frame = cvQueryFrame( capture );	// æ‘„åƒå¤´è¯»å–æ–‡ä»¶å¼€å…³
 			//capture >> frame;
 			//-- 3. Apply the classifier to the frame
 			if( !frame.empty() )
 			{ 
 				detectAndDisplay( frame );
-				//Ê¶±ğ²¿·Ö
+				//è¯†åˆ«éƒ¨åˆ†
 
 			}
 			else
@@ -1165,7 +1165,7 @@ UINT  Capture_Thread(LPVOID p)
 	}
 	return 0;
 }
-//ÊÓÆµ²¥·Å¼ì²âÊ¶±ğÏß³Ì
+//è§†é¢‘æ’­æ”¾æ£€æµ‹è¯†åˆ«çº¿ç¨‹
 UINT  Video_Thread(LPVOID p)
 {
 	Mat frame;
@@ -1180,18 +1180,18 @@ UINT  Video_Thread(LPVOID p)
 	{
 		while( true )
 		{
-			//frame = cvQueryFrame( capture );	// ÉãÏñÍ·¶ÁÈ¡ÎÄ¼ş¿ª¹Ø
+			//frame = cvQueryFrame( capture );	// æ‘„åƒå¤´è¯»å–æ–‡ä»¶å¼€å…³
 			capture >> frame;
 			//-- 3. Apply the classifier to the frame
 			if( !frame.empty() )
 			{ 
 				detectAndDisplay( frame );
-				//Ê¶±ğ²¿·Ö
+				//è¯†åˆ«éƒ¨åˆ†
 			}
 			else
 			{
 				frame.release();
-				AfxMessageBox(_T("²¥·Å½áÊø"));
+				AfxMessageBox(_T("æ’­æ”¾ç»“æŸ"));
 				return 0;
 			}
 
@@ -1206,22 +1206,22 @@ UINT  Video_Thread(LPVOID p)
 	}
 	return 0;
 }
-//Í³¼ÆÊ¶±ğÕıÈ·ÂÊÓÃ
+//ç»Ÿè®¡è¯†åˆ«æ­£ç¡®ç‡ç”¨
 void recog(CString tp)
 {
 	CFileFind fileFinder;
 	CString filePath = tp + _T("//*.*");
 	BOOL bFinished = fileFinder.FindFile(filePath);
-	while(bFinished)  //Ã¿´ÎÑ­»·¶ÔÓ¦Ò»¸öÀà±ğÄ¿Â¼
+	while(bFinished)  //æ¯æ¬¡å¾ªç¯å¯¹åº”ä¸€ä¸ªç±»åˆ«ç›®å½•
 	{
 		bFinished = fileFinder.FindNextFile();
-		if(fileFinder.IsDirectory() && !fileFinder.IsDots())  //ÈôÊÇÄ¿Â¼Ôòµİ¹éµ÷ÓÃ´Ë·½·¨
+		if(fileFinder.IsDirectory() && !fileFinder.IsDots())  //è‹¥æ˜¯ç›®å½•åˆ™é€’å½’è°ƒç”¨æ­¤æ–¹æ³•
 		{	
 			recog(fileFinder.GetFilePath());	
 		}
 		else
 		{
-			//»ñÈ¡ÎÄ¼şÀàĞÍ
+			//è·å–æ–‡ä»¶ç±»å‹
 			CString fileName = fileFinder.GetFileName();
 			//fileFinder.GetFileTitle
 
@@ -1231,7 +1231,7 @@ void recog(CString tp)
 				Mat frame = imread(str);
 				if (!frame.data)
 				{
-					AfxMessageBox(_T("¶ÁÈ¡ÎÄ¼şÊ§°Ü"));
+					AfxMessageBox(_T("è¯»å–æ–‡ä»¶å¤±è´¥"));
 					return;
 				}
 
@@ -1244,7 +1244,7 @@ void recog(CString tp)
 				//Mat test(frame,faces[0]);
 				if(faces.size()==0)
 				{
-					//AfxMessageBox(_T("Ã»ÓĞ¼ì²âµ½ÈËÁ³"));
+					//AfxMessageBox(_T("æ²¡æœ‰æ£€æµ‹åˆ°äººè„¸"));
 					return;
 				}
 				Mat rect_img=frame(faces[0]);
@@ -1280,8 +1280,8 @@ void recog(CString tp)
 	}
 	fileFinder.Close();
 }
-//¶ÁÊ¶±ğÎÄ¼ş£¬ÒªÊ¹ÓÃĞèÒªĞŞ¸Ä
-//ĞŞ¸ÄÊÊÓ¦ÊÓÆµ¿â
+//è¯»è¯†åˆ«æ–‡ä»¶ï¼Œè¦ä½¿ç”¨éœ€è¦ä¿®æ”¹
+//ä¿®æ”¹é€‚åº”è§†é¢‘åº“
 void ReadVideoFile(CString tp)
 {
 	CFileFind fileFinder;
@@ -1290,14 +1290,14 @@ void ReadVideoFile(CString tp)
 	BOOL bFinished = fileFinder.FindFile(filePath);
 	int filenum=-1;
 	Mat frame;
-	while(bFinished)  //Ã¿´ÎÑ­»·¶ÔÓ¦Ò»¸öÀà±ğÄ¿Â¼
+	while(bFinished)  //æ¯æ¬¡å¾ªç¯å¯¹åº”ä¸€ä¸ªç±»åˆ«ç›®å½•
 	{
 		bFinished = fileFinder.FindNextFile();
-		if(fileFinder.IsDots())  //ÈôÊÇÄ¿Â¼Ôòµİ¹éµ÷ÓÃ´Ë·½·¨
+		if(fileFinder.IsDots())  //è‹¥æ˜¯ç›®å½•åˆ™é€’å½’è°ƒç”¨æ­¤æ–¹æ³•
 		{
 			continue;
 		}
-		//»ñÈ¡ÎÄ¼şÀàĞÍ
+		//è·å–æ–‡ä»¶ç±»å‹
 		CString fileName = fileFinder.GetFileName();
 		int dotPos=fileName.ReverseFind('.');
 		CString fileExt=fileName.Right(fileName.GetLength()-dotPos);
@@ -1390,15 +1390,15 @@ void ReadVideoFile(CString tp)
 
 						Mat new_img;
 						resize(rect_img,new_img,Size(80,80),0,0,CV_INTER_LINEAR);
-						//Â·¾¶
-						//Â·¾¶
-						//Â·¾¶
+						//è·¯å¾„
+						//è·¯å¾„
+						//è·¯å¾„
 						CString s1= CString("F:\\test\\");
 						CString s2,s3;
 						s2.Format(_T("%d"),file_index);
 						s3.Format(_T("%d"),pic_index);
 						s1=s1+s2;
-						//×îºÃÏÈ½¨Á¢¸ÃÄ¿Â¼£¬ÓÃÓÚ´æ´¢ÊÓÆµÖĞµÄ¼¸Ö¡Í¼Ïñ
+						//æœ€å¥½å…ˆå»ºç«‹è¯¥ç›®å½•ï¼Œç”¨äºå­˜å‚¨è§†é¢‘ä¸­çš„å‡ å¸§å›¾åƒ
 						if (!PathIsDirectory(s1))
 						{
 							::CreateDirectory(s1, NULL);
@@ -1448,7 +1448,7 @@ void tiqutezheng()
 	
 }
 */
-/**************************ÎÒ×Ô¼ºµÄº¯Êı*******************************/
+/**************************æˆ‘è‡ªå·±çš„å‡½æ•°*******************************/
 
 
 
@@ -1483,21 +1483,21 @@ BEGIN_MESSAGE_MAP(ClbpDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// ClbpDlg ÏûÏ¢´¦Àí³ÌĞò
+// ClbpDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 BOOL ClbpDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// ÉèÖÃ´Ë¶Ô»°¿òµÄÍ¼±ê¡£µ±Ó¦ÓÃ³ÌĞòÖ÷´°¿Ú²»ÊÇ¶Ô»°¿òÊ±£¬¿ò¼Ü½«×Ô¶¯
-	//  Ö´ĞĞ´Ë²Ù×÷
-	SetIcon(m_hIcon, TRUE);			// ÉèÖÃ´óÍ¼±ê
-	SetIcon(m_hIcon, FALSE);		// ÉèÖÃĞ¡Í¼±ê
+	// è®¾ç½®æ­¤å¯¹è¯æ¡†çš„å›¾æ ‡ã€‚å½“åº”ç”¨ç¨‹åºä¸»çª—å£ä¸æ˜¯å¯¹è¯æ¡†æ—¶ï¼Œæ¡†æ¶å°†è‡ªåŠ¨
+	//  æ‰§è¡Œæ­¤æ“ä½œ
+	SetIcon(m_hIcon, TRUE);			// è®¾ç½®å¤§å›¾æ ‡
+	SetIcon(m_hIcon, FALSE);		// è®¾ç½®å°å›¾æ ‡
 
 	//ShowWindow(SW_MINIMIZE);
 	ShowWindow(SW_SHOW);
 
-	// TODO: ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–ä»£ç 
 
 	CWnd_pic_A = GetDlgItem(IDC_PIC_A);
 	CWnd_pic_B = GetDlgItem(IDC_PIC_B);
@@ -1505,22 +1505,22 @@ BOOL ClbpDlg::OnInitDialog()
 	lbp59table(table);
 	Close_Capture=false;
 
-	return TRUE;  // ³ı·Ç½«½¹µãÉèÖÃµ½¿Ø¼ş£¬·ñÔò·µ»Ø TRUE
+	return TRUE;  // é™¤éå°†ç„¦ç‚¹è®¾ç½®åˆ°æ§ä»¶ï¼Œå¦åˆ™è¿”å› TRUE
 }
 
-// Èç¹ûÏò¶Ô»°¿òÌí¼Ó×îĞ¡»¯°´Å¥£¬ÔòĞèÒªÏÂÃæµÄ´úÂë
-//  À´»æÖÆ¸ÃÍ¼±ê¡£¶ÔÓÚÊ¹ÓÃÎÄµµ/ÊÓÍ¼Ä£ĞÍµÄ MFC Ó¦ÓÃ³ÌĞò£¬
-//  Õâ½«ÓÉ¿ò¼Ü×Ô¶¯Íê³É¡£
+// å¦‚æœå‘å¯¹è¯æ¡†æ·»åŠ æœ€å°åŒ–æŒ‰é’®ï¼Œåˆ™éœ€è¦ä¸‹é¢çš„ä»£ç 
+//  æ¥ç»˜åˆ¶è¯¥å›¾æ ‡ã€‚å¯¹äºä½¿ç”¨æ–‡æ¡£/è§†å›¾æ¨¡å‹çš„ MFC åº”ç”¨ç¨‹åºï¼Œ
+//  è¿™å°†ç”±æ¡†æ¶è‡ªåŠ¨å®Œæˆã€‚
 
 void ClbpDlg::OnPaint()
 {
 	if (IsIconic())
 	{
-		CPaintDC dc(this); // ÓÃÓÚ»æÖÆµÄÉè±¸ÉÏÏÂÎÄ
+		CPaintDC dc(this); // ç”¨äºç»˜åˆ¶çš„è®¾å¤‡ä¸Šä¸‹æ–‡
 
 		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 
-		// Ê¹Í¼±êÔÚ¹¤×÷Çø¾ØĞÎÖĞ¾ÓÖĞ
+		// ä½¿å›¾æ ‡åœ¨å·¥ä½œåŒºçŸ©å½¢ä¸­å±…ä¸­
 		int cxIcon = GetSystemMetrics(SM_CXICON);
 		int cyIcon = GetSystemMetrics(SM_CYICON);
 		CRect rect;
@@ -1528,7 +1528,7 @@ void ClbpDlg::OnPaint()
 		int x = (rect.Width() - cxIcon + 1) / 2;
 		int y = (rect.Height() - cyIcon + 1) / 2;
 
-		// »æÖÆÍ¼±ê
+		// ç»˜åˆ¶å›¾æ ‡
 		dc.DrawIcon(x, y, m_hIcon);
 	}
 	else
@@ -1537,8 +1537,8 @@ void ClbpDlg::OnPaint()
 	}
 }
 
-//µ±ÓÃ»§ÍÏ¶¯×îĞ¡»¯´°¿ÚÊ±ÏµÍ³µ÷ÓÃ´Ëº¯ÊıÈ¡µÃ¹â±ê
-//ÏÔÊ¾¡£
+//å½“ç”¨æˆ·æ‹–åŠ¨æœ€å°åŒ–çª—å£æ—¶ç³»ç»Ÿè°ƒç”¨æ­¤å‡½æ•°å–å¾—å…‰æ ‡
+//æ˜¾ç¤ºã€‚
 HCURSOR ClbpDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
@@ -1548,14 +1548,14 @@ HCURSOR ClbpDlg::OnQueryDragIcon()
 
 void ClbpDlg::OnBnClickedExit()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	exit(0);
 }
 
 
 void ClbpDlg::OnBnClickedTrain()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	if( !face_cascade.load( face_cascade_name ) ){ AfxMessageBox(_T("Error loading\n")); return; };
 	file_index=-1;
 	GetDlgItem(IDC_TRAIN)->EnableWindow(FALSE);
@@ -1563,7 +1563,7 @@ void ClbpDlg::OnBnClickedTrain()
 	my_filepath.GetWindowTextW(Cstr);
 	if(Cstr.GetLength()==0)
 	{
-		AfxMessageBox(_T("ÇëÑ¡ÔñÄ¿Â¼"));
+		AfxMessageBox(_T("è¯·é€‰æ‹©ç›®å½•"));
 		GetDlgItem(IDC_TRAIN)->EnableWindow(TRUE);
 		return;
 	}
@@ -1571,16 +1571,16 @@ void ClbpDlg::OnBnClickedTrain()
 	++file_index;
 	calcAvg();
 	write_file();
-	AfxMessageBox(_T("ÑµÁ·Íê³É£¡"));
+	AfxMessageBox(_T("è®­ç»ƒå®Œæˆï¼"));
 	GetDlgItem(IDC_TRAIN)->EnableWindow(TRUE);
 
 }
 
-//ĞŞ¸ÄÊ¹ÓÃ
+//ä¿®æ”¹ä½¿ç”¨
 void ClbpDlg::OnBnClickedRecognition()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
-	//Í³¼ÆÊ¶±ğÕıÈ·ÂÊ
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
+	//ç»Ÿè®¡è¯†åˆ«æ­£ç¡®ç‡
 	/*
 	kk=0;
 	rright=0;
@@ -1591,7 +1591,7 @@ void ClbpDlg::OnBnClickedRecognition()
 	AfxMessageBox(Cstr);
 	*/
 
-	/**********************µ¥ÕÅÊ¶±ğ²¿·Ö*********************/
+	/**********************å•å¼ è¯†åˆ«éƒ¨åˆ†*********************/
 	CString Cstr;
 	my_picpath.GetWindowTextW(Cstr);
 	string str=CStringA(Cstr);
@@ -1599,11 +1599,11 @@ void ClbpDlg::OnBnClickedRecognition()
 	//ShowMatImgToWnd(CWnd_pic_A,image);
 	if (!frame.data)
 	{
-		AfxMessageBox(_T("¶ÁÈ¡ÎÄ¼şÊ§°Ü"));
+		AfxMessageBox(_T("è¯»å–æ–‡ä»¶å¤±è´¥"));
 		return;
 	}
 
-/*********************¼ì²âÈËÁ³²¿·Ö*****************************/
+/*********************æ£€æµ‹äººè„¸éƒ¨åˆ†*****************************/
 	if(NEED_DETECT)
 	{
 		std::vector<Rect> faces;
@@ -1614,7 +1614,7 @@ void ClbpDlg::OnBnClickedRecognition()
 		face_cascade.detectMultiScale( frame_gray, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
 		if(faces.size()==0)
 		{
-			AfxMessageBox(_T("Ã»ÓĞ¼ì²âµ½ÈËÁ³"));
+			AfxMessageBox(_T("æ²¡æœ‰æ£€æµ‹åˆ°äººè„¸"));
 			return;
 		}
 		for( size_t i = 0; i < faces.size(); i++ )
@@ -1658,7 +1658,7 @@ void ClbpDlg::OnBnClickedRecognition()
 	Mat res=imread(str);
 	if (!res.data)
 	{
-		AfxMessageBox(_T("Î´ÕÒµ½¶ÔÓ¦Í¼Æ¬"));
+		AfxMessageBox(_T("æœªæ‰¾åˆ°å¯¹åº”å›¾ç‰‡"));
 		return;
 	}
 	ShowMatImgToWnd(CWnd_pic_B,res);
@@ -1667,12 +1667,12 @@ void ClbpDlg::OnBnClickedRecognition()
 
 void ClbpDlg::OnEnChangeMfceditbrowse2()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CDialogEx::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CDialogEx::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CString Cstr;
 	my_picpath.GetWindowTextW(Cstr);
 	string str=CStringA(Cstr);
@@ -1686,7 +1686,7 @@ void ClbpDlg::OnEnChangeMfceditbrowse2()
 
 void ClbpDlg::OnBnClickedCamera()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	GetDlgItem(IDC_CAMERA)->EnableWindow(FALSE);
 	GetDlgItem(IDC_VIDEO)->EnableWindow(FALSE);
 	ThreadInfo info;
@@ -1698,7 +1698,7 @@ void ClbpDlg::OnBnClickedCamera()
 
 void ClbpDlg::OnBnClickedStop()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	GetDlgItem(IDC_CAMERA)->EnableWindow(TRUE);
 	GetDlgItem(IDC_VIDEO)->EnableWindow(TRUE);
 	Close_Capture=true;
@@ -1712,7 +1712,7 @@ void ClbpDlg::OnBnClickedStop()
 
 void ClbpDlg::OnBnClickedVideo()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	GetDlgItem(IDC_VIDEO)->EnableWindow(FALSE);
 	GetDlgItem(IDC_CAMERA)->EnableWindow(FALSE);
 	ThreadInfo info;
@@ -1732,7 +1732,7 @@ void ClbpDlg::OnBnClickedVideo()
 
 void ClbpDlg::OnBnClickedReadRes()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	if( !face_cascade.load( face_cascade_name ) ){ AfxMessageBox(_T("Error loading\n")); return; };
 	GetDlgItem(IDC_READ_RES)->EnableWindow(FALSE);
 	ifstream file;
@@ -1758,24 +1758,24 @@ void ClbpDlg::OnBnClickedReadRes()
 	{
 		picpath[index++]=str.c_str();
 	}
-	AfxMessageBox(_T("¶ÁÈ¡Íê³É"));
+	AfxMessageBox(_T("è¯»å–å®Œæˆ"));
 	GetDlgItem(IDC_READ_RES)->EnableWindow(TRUE);
 }
 
 
 void ClbpDlg::OnEnChangeMfceditbrowse1()
 {
-	// TODO:  Èç¹û¸Ã¿Ø¼şÊÇ RICHEDIT ¿Ø¼ş£¬Ëü½«²»
-	// ·¢ËÍ´ËÍ¨Öª£¬³ı·ÇÖØĞ´ CDialogEx::OnInitDialog()
-	// º¯Êı²¢µ÷ÓÃ CRichEditCtrl().SetEventMask()£¬
-	// Í¬Ê±½« ENM_CHANGE ±êÖ¾¡°»ò¡±ÔËËãµ½ÑÚÂëÖĞ¡£
+	// TODO:  å¦‚æœè¯¥æ§ä»¶æ˜¯ RICHEDIT æ§ä»¶ï¼Œå®ƒå°†ä¸
+	// å‘é€æ­¤é€šçŸ¥ï¼Œé™¤éé‡å†™ CDialogEx::OnInitDialog()
+	// å‡½æ•°å¹¶è°ƒç”¨ CRichEditCtrl().SetEventMask()ï¼Œ
+	// åŒæ—¶å°† ENM_CHANGE æ ‡å¿—â€œæˆ–â€è¿ç®—åˆ°æ©ç ä¸­ã€‚
 
-	// TODO:  ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO:  åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 }
 
 void ClbpDlg::OnBnClickedButton2()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	if( !face_cascade.load( face_cascade_name ) ){ AfxMessageBox(_T("Error loading\n")); return; };
 	file_index=-1;
 	GetDlgItem(IDC_BUTTON2)->EnableWindow(FALSE);
@@ -1783,7 +1783,7 @@ void ClbpDlg::OnBnClickedButton2()
 	my_filepath.GetWindowTextW(Cstr);
 	if(Cstr.GetLength()==0)
 	{
-		AfxMessageBox(_T("ÇëÑ¡ÔñÄ¿Â¼"));
+		AfxMessageBox(_T("è¯·é€‰æ‹©ç›®å½•"));
 		GetDlgItem(IDC_TRAIN)->EnableWindow(TRUE);
 		return;
 	}
@@ -1798,6 +1798,6 @@ void ClbpDlg::OnBnClickedButton2()
 	++file_index;
 	calcAvg();
 	write_file();
-	AfxMessageBox(_T("ÑµÁ·Íê³É£¡"));
+	AfxMessageBox(_T("è®­ç»ƒå®Œæˆï¼"));
 	GetDlgItem(IDC_BUTTON2)->EnableWindow(TRUE);
 }
